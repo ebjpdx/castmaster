@@ -1,0 +1,4 @@
+class SampleFrame < ForecastGenerator
+
+end
+
