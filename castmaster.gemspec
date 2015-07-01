@@ -15,20 +15,20 @@ Gem::Specification.new do |s|
     DESC
   s.authors = ["Eric B. Johnson"]
   s.email = 'ebj.pdx@gmail.com'
-  s.files        = Dir["{lib}/**/*.rb", "bin/*", "LICENSE", "*.md"]
-  s.require_path = 'lib'
+  s.files         = `git ls-files`.split($/)
+  s.executables   = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  s.test_files    = s.files.grep(%r{^(test|spec|features)/})
+  s.require_paths = ["lib"]
   # s.homepage = ''
   s.license = 'MIT'
 
   s.add_development_dependency "bundler", "~> 1.3"
   s.add_development_dependency "rake"
+  s.add_development_dependency "rspec "
 
   s.add_runtime_dependency 'activerecord', '>= 3.2'
   s.add_runtime_dependency 'activesupport', '>= 3.2.13'
   s.add_runtime_dependency 'json', '>= 1.5.5'
-  s.add_runtime_dependency 'yaml',
-  s.add_runtime_dependency 'erb'
-  s.add_runtime_dependency 'logger'
   s.add_runtime_dependency 'require_all', '>= 1.2.1'
   s.add_runtime_dependency 'popen4', '>= 0.1.2'
 
