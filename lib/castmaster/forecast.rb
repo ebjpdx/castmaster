@@ -34,12 +34,12 @@ class Forecast < ActiveRecord::Base
       ## until the ability to determine whether a table is paritioned is added, this hack is needed as a workaround
       begin 
         sql = "alter table forecasting_pdata.#{target} drop partition id#{self.id}"
-        conn.query(sql)
+        Castmaster.query(sql)
       rescue Exception => e
         if e.to_s =~ /ERROR:  relation .+ does not exist/
           begin
             sql = "delete from forecasting.#{target} where forecast_id = #{self.id}"
-            conn.query(sql)
+            Castmaster.query(sql)
           rescue Exception => e2
             if e2.to_s =~ /ERROR:  column "forecast_id" does not exist/
               LOG.info "Not deleting values from table: #{target}. It doesn't have a forecast_id field."

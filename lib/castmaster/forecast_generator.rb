@@ -95,7 +95,7 @@ class ForecastGenerator
 
 
   def find_existing_forecast_run
-    conn.verify!
+    # conn.verify!
     forecasts = Forecast.where(identification_conditions.merge({date_reaped: nil})).order('id desc')
     current_dependencies = {}
     self.dependencies.each { |n,d|  current_dependencies[n] = d.forecast_id unless d.parameters[:ephemeral] }
@@ -151,7 +151,7 @@ class ForecastGenerator
       sql = "alter table forecasting_pdata.#{target}
              add partition  id#{self.forecast_id} values (#{self.forecast_id}) 
              WITH (APPENDONLY=true, COMPRESSLEVEL=6, COMPRESSTYPE=zlib, OIDS=FALSE )"
-      conn.query(sql)
+      Castmaster.query(sql)
     end
   end
 
@@ -165,7 +165,7 @@ class ForecastGenerator
       return "Finished Debugging"
     end
 
-    conn.verify!
+    # conn.verify! #Do we still need this?
     force_refresh = force_refresh.to_sym if force_refresh.is_a? String
 
     LOG.info {"#{log_indent}#{name}--Checking Dependencies:"} unless @dependencies.length == 0 
@@ -186,7 +186,7 @@ class ForecastGenerator
         self.forecast_run.id = get_next_forecast_id
         add_partitions if self.partitioned_table?
         if self.type == :sql and self.sql
-            conn.execute(self.sql)
+            Castmaster.execute(self.sql)
         end
         forecast_procedure   #Always run forecast procedure -- to allow post-hoc processing
         self.forecast_run.dependencies.new @dependencies.map { |n,d| {dependency_id: d.forecast_id, name: d.name, target_table: d.target_table, dependency_name: n.to_s} } unless @dependencies.nil? || @dependencies.empty?
