@@ -5,11 +5,37 @@ require 'logger'
 require 'require_all'
 
 require_rel 'castmaster/**/*.rb'
-# require_relative 'castmaster/forecast'
-# require_relative 'castmaster/dependency'
-# require_relative 'castmaster/run_shell_command'
-# require_all      'castmaster/castmaster'
-# require_relative 'castmaster/configuration'
-# require_relative 'castmaster/database'
+
+
+
+module Castmaster
+
+    def self.initialize(configuration_file = nil)
+      Castmaster::Configuration.load_configuration(configuration_file) if configuration_file
+      @@log = Logger.new(Castmaster::Configuration.log_file)       
+      initialize_application_database_connection
+      load_initializers
+      load_generators
+    end
+
+    def self.log
+       @@log 
+    end
+
+    def self.load_generators
+      require_all Castmaster::Configuration.generator_library
+    end
+
+    def self.initialize_application_database_connection
+        ActiveRecord::Base.establish_connection(Castmaster::Configuration.database_configurations[Castmaster::Configuration.environment])
+    end
+
+    def self.load_initializers
+      require_all Castmaster::Configuration.initializer_dir #if File.exists?(Castmaster::Configuration.initializer_dir)
+
+    end
+
+
+end
 
 

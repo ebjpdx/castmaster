@@ -1,52 +1,38 @@
-
-
 module Castmaster
 
   module Configuration
+    extend self
+
     require 'erb'
     require 'yaml'
     require 'json'
 
-    DEFAULT_GENERATOR_LIBRARY = 'lib'
-    DEFAULT_CONFIG_DIR = 'config'
-    DEFAULT_LOG_DIR = 'logs'
-    DEFAULT_INITIALIZER_DIR = nil 
 
-    DEFAULT_DATABASE_CONFIG_FILE = 'database.yml'
-    DEFAULT_LOG_FILE = 'castmaster.log'
+    attr_accessor :generator_library, :config_dir, :log_dir, :initializer_dir,
+                  :database_config_file, :log_file, :environment
 
-    attr_accessor :generator_library, :config_dir, :log_dir, :initializer_dir, :database_config_file, :log_file, :environment
+    @environment          = ENV["DB_ENV"] || ENV["RAILS_ENV"] || "development"
+    @config_dir           = 'config'
+    @generator_library    = 'lib'
+    @log_dir              = 'logs'
+    @initializer_dir      = 'initializers' 
 
-    # Make sure we have the default values set when we get 'extended'
-    def self.extended(base)
-      base.reset
-    end
-
- 
-    def reset
-      self.generator_library    = DEFAULT_GENERATOR_LIBRARY
-      self.config_dir           = DEFAULT_CONFIG_DIR
-      self.log_dir              = DEFAULT_LOG_DIR
-      self.initializer_dir      = DEFAULT_INITIALIZER_DIR
-
-      self.database_config_file = DEFAULT_DATABASE_CONFIG_FILE
-      self.log_file             = DEFAULT_LOG_FILE
-      self.environment          = ENV["DB_ENV"] || "development"
-    end
-
+    @config_file          = File.join(@config_dir,'config.yml')
+    @database_config_file = File.join(@config_dir,'database.yml')
+    @log_file             = File.join(@log_dir,'castmaster.log')
+    
 
     def configure
       yield self
     end
 
 
-    def load_configuration(config_file)
-      params = load_config_file(config_file)
+    def load_configuration(config)
+      params = config.is_a?(Hash) ? config : load_config_file(config)
       params.each  do |param, value| 
-        Castmaster.instance_variable_set("@#{param}",value)
+        self.instance_variable_set("@#{param}",value)
       end
     end
-
 
 
     def load_config_file(config_file)
@@ -61,7 +47,7 @@ module Castmaster
 
 
     def database_configurations
-        load_config_file(File.join(self.config_dir,self.database_config_file))
+        load_config_file(self.database_config_file)
     end
 
 
@@ -73,8 +59,6 @@ module Castmaster
 
   
   end
-
-  extend Configuration
 
 end
 
