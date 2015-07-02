@@ -5,16 +5,16 @@ class Forecast < ActiveRecord::Base
 
   def reap!(log_indent='')
     
-    LOG.info "#{log_indent}Forecast #{id} was already reaped on #{date_reaped}. Reaping again." unless date_reaped.nil?
+    Castmaster.log.info "#{log_indent}Forecast #{id} was already reaped on #{date_reaped}. Reaping again." unless date_reaped.nil?
     if !living_parents.empty?
-      LOG.info "#{log_indent}Cannot reap forecast #{id}, #{name}! It is a dependency of forecasts #{self.living_parents.map {|p| p.id}}"  
+      Castmaster.log.info "#{log_indent}Cannot reap forecast #{id}, #{name}! It is a dependency of forecasts #{self.living_parents.map {|p| p.id}}"  
       return false 
     else
       begin 
         delete_target_table_values!
         update_attributes(date_reaped: Time.now) if date_reaped.nil?
-        LOG.info "#{log_indent}Reaped forecast #{id}, #{name}"
-        LOG.info "#{log_indent}Checking if #{dependencies.length} dependencies can be reaped:" if dependencies.length > 0
+        Castmaster.log.info "#{log_indent}Reaped forecast #{id}, #{name}"
+        Castmaster.log.info "#{log_indent}Checking if #{dependencies.length} dependencies can be reaped:" if dependencies.length > 0
         dependencies.each { |d| d.dependent_forecast.reap!(log_indent + '  ') }
       rescue Exception => e 
         update_attributes(date_reaped: nil)
@@ -42,13 +42,13 @@ class Forecast < ActiveRecord::Base
             Castmaster.query(sql)
           rescue Exception => e2
             if e2.to_s =~ /ERROR:  column "forecast_id" does not exist/
-              LOG.info "Not deleting values from table: #{target}. It doesn't have a forecast_id field."
+              Castmaster.log.info "Not deleting values from table: #{target}. It doesn't have a forecast_id field."
             else
               raise e2
             end
           end
         elsif e.to_s =~ /ERROR:  partition .+ does not exist/  #Don't raise an error if the partition has already been deleted
-          LOG.info "This partition for #{target}, #{self.id} has already been deleted."
+          Castmaster.log.info "This partition for #{target}, #{self.id} has already been deleted."
         else
           raise e
         end

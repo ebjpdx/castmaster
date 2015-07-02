@@ -120,7 +120,7 @@ class ForecastGenerator
          (current_dependencies.to_a - old_dependencies.to_a).empty?
       end
       if forecasts.length > 1 then 
-        LOG.warn {"The forecast_identifiers for #{name} do not specify a unique forecast id. Unless you have specified the force_refresh option, this is an error.
+        Castmaster.log.warn {"The forecast_identifiers for #{name} do not specify a unique forecast id. Unless you have specified the force_refresh option, this is an error.
            Forecast ID's returned: #{forecasts.map {|f| f.id}}
            Criteria: #{identification_conditions}
            Dependencies: #{current_dependencies}"}
@@ -168,19 +168,19 @@ class ForecastGenerator
     # conn.verify! #Do we still need this?
     force_refresh = force_refresh.to_sym if force_refresh.is_a? String
 
-    LOG.info {"#{log_indent}#{name}--Checking Dependencies:"} unless @dependencies.length == 0 
+    Castmaster.log.info {"#{log_indent}#{name}--Checking Dependencies:"} unless @dependencies.length == 0 
     @dependencies.each do |n,d| 
 
       if d.forecast_run.nil? || force_refresh == :all
-        LOG.info {"#{log_indent + '  '}#{n}--No matching forecast; force_refresh = #{force_refresh.to_s}"}
+        Castmaster.log.info {"#{log_indent + '  '}#{n}--No matching forecast; force_refresh = #{force_refresh.to_s}"}
         d.run((if force_refresh == :all then force_refresh end), debug, (log_indent ||'') + '    ')
       else 
-        LOG.info {"#{log_indent + '  '}#{n}--Using existing forecast: #{d.forecast_id}"}
+        Castmaster.log.info {"#{log_indent + '  '}#{n}--Using existing forecast: #{d.forecast_id}"}
       end
     end
 
     if self.forecast_run.nil? || force_refresh
-      LOG.info {"#{log_indent}#{name}--Generating new forecast: force_refresh = '#{force_refresh.to_s}', parameters = #{self.parameters.except(:dependencies)} "}
+      Castmaster.log.info {"#{log_indent}#{name}--Generating new forecast: force_refresh = '#{force_refresh.to_s}', parameters = #{self.parameters.except(:dependencies)} "}
       begin
         self.forecast_run = Forecast.new(forecasts_field_values)
         self.forecast_run.id = get_next_forecast_id
@@ -191,14 +191,14 @@ class ForecastGenerator
         forecast_procedure   #Always run forecast procedure -- to allow post-hoc processing
         self.forecast_run.dependencies.new @dependencies.map { |n,d| {dependency_id: d.forecast_id, name: d.name, target_table: d.target_table, dependency_name: n.to_s} } unless @dependencies.nil? || @dependencies.empty?
         self.forecast_run.save
-        LOG.info {"#{log_indent}#{name}--Finished forecast run: forecast_id = #{self.forecast_run.id}."}    
+        Castmaster.log.info {"#{log_indent}#{name}--Finished forecast run: forecast_id = #{self.forecast_run.id}."}    
       rescue StandardError => e
         self.forecast_run = nil
-        LOG.error e
+        Castmaster.log.error e
         raise e       
       end
     else
-      LOG.info {"#{log_indent}#{name}--Using existing forecast: forecast_id = #{self.forecast_id}, force_refresh = '#{force_refresh.to_s}', parameters = #{self.parameters}"} 
+      Castmaster.log.info {"#{log_indent}#{name}--Using existing forecast: forecast_id = #{self.forecast_id}, force_refresh = '#{force_refresh.to_s}', parameters = #{self.parameters}"} 
     end
     forecast_run
   end
