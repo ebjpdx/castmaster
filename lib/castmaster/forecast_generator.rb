@@ -57,8 +57,8 @@ class ForecastGenerator
 
   def self.merge_default_parameters(param)
     param.each do |field,v|
-      raise ArgumentError, "#{self.name} does not accept '#{field.to_s}' as a parameter." unless self.default_parameters.keys.include?(field)
-      raise TypeError, "The field '#{field.to_s}' should be #{self.default_parameters[field].class} not #{v.class}" unless v.is_a?(self.default_parameters[field].class)  
+      warn "'#{field.to_s}' is not a default parameter of #{self.name}. Are you passing this through to a dependency?" unless self.default_parameters.keys.include?(field)
+      raise TypeError, "The field '#{field.to_s}' should be #{self.default_parameters[field].class} not #{v.class}" unless !self.default_parameters.keys.include?(field) || v.is_a?(self.default_parameters[field].class)  
     end
     self.default_parameters.merge(param) 
   end
@@ -88,7 +88,7 @@ class ForecastGenerator
     iv = instance_values.symbolize_keys
     iv.merge!(
               #id: get_next_forecast_id,
-              parameters: if parameters.nil? then '' else  parameters.to_json end
+              parameters: (parameters.nil?)? '' :  parameters.to_json
               )
     iv.slice(*Forecast.column_names.map {|c| c.to_sym} )
   end
