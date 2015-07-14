@@ -41,6 +41,11 @@ class ForecastGenerator
     forecast_generator
   end  
 
+  def self.reload!  #Reloads class to help development in an interactive session
+    load_all Castmaster::Configuration.generator_library { |lib| File.join(lib, '**', self.name.underscore || '.rb')}
+  end
+
+
 
   def validate!
     REQUIRED_FIELDS.each do |field,type| 
