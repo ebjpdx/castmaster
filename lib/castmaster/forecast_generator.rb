@@ -215,4 +215,23 @@ class ForecastGenerator
   end
 
 
+  def map_dependencies
+    mp = {}
+    mp[:forecast_id] = self.forecast_id    
+    unless self.dependencies.empty?
+      dep_map = {}
+      self.dependencies.each do |n,f|
+        dep_map[n] = f.map_dependencies
+      end
+      mp[:dependencies] = dep_map
+    end
+    mp 
+  end
+
+  def summarize
+    puts self.map_dependencies.to_yaml
+  end
+
+
+
 end
