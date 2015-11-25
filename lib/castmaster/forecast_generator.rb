@@ -164,7 +164,6 @@ class ForecastGenerator
     @partitioned_table
   end
 
-class ForecastGenerator
   def run(force_refresh=false, debug=false, log_indent='')
     if debug 
       puts sql
@@ -213,7 +212,6 @@ class ForecastGenerator
     forecast_run
   end
 
-end
   def forecast_procedure
   end
 
