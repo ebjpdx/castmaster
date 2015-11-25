@@ -3,11 +3,23 @@ module Castmaster
   module Database
 
     def query(sql)
-      ActiveRecord::Base.connection.query(sql)
+    	begin
+        ActiveRecord::Base.connection.query(sql)
+      rescue 
+        ActiveRecord::Base.connection.verify!
+        ActiveRecord::Base.connection.rollback_db_transaction
+        ActiveRecord::Base.connection.query(sql)
+      end
     end
 
     def execute(sql)
-      ActiveRecord::Base.connection.execute(sql)
+    	begin
+        ActiveRecord::Base.connection.execute(sql)
+      rescue 
+        ActiveRecord::Base.connection.verify!
+        ActiveRecord::Base.connection.rollback_db_transaction
+        ActiveRecord::Base.connection.execute(sql)
+      end
     end
 
 
