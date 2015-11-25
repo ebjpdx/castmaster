@@ -164,13 +164,14 @@ class ForecastGenerator
     @partitioned_table
   end
 
+class ForecastGenerator
   def run(force_refresh=false, debug=false, log_indent='')
     if debug 
       puts sql
       return "Finished Debugging"
     end
 
-    # conn.verify! #Do we still need this?
+    ActiveRecord::Base.connection.verify!
     force_refresh = force_refresh.to_sym if force_refresh.is_a? String
 
     Castmaster.log.info {"#{log_indent}#{name}--Checking Dependencies:"} unless @dependencies.length == 0 
@@ -186,19 +187,23 @@ class ForecastGenerator
 
     if self.forecast_run.nil? || force_refresh
       Castmaster.log.info {"#{log_indent}#{name}--Generating new forecast: force_refresh = '#{force_refresh.to_s}', parameters = #{self.parameters.except(:dependencies)} "}
-      begin
         self.forecast_run = Forecast.new(forecasts_field_values)
         self.forecast_run.id = get_next_forecast_id
+        self.forecast_run.status = "started"
+        self.forecast_run.dependencies.new @dependencies.map { |n,d| {dependency_id: d.forecast_id, name: d.name, target_table: d.target_table, dependency_name: n.to_s} } unless @dependencies.nil? || @dependencies.empty?
+        self.forecast_run.save
+      begin
         add_partitions if self.partitioned_table?
         if self.type == :sql and self.sql
             Castmaster.execute(self.sql)
         end
         forecast_procedure   #Always run forecast procedure -- to allow post-hoc processing
-        self.forecast_run.dependencies.new @dependencies.map { |n,d| {dependency_id: d.forecast_id, name: d.name, target_table: d.target_table, dependency_name: n.to_s} } unless @dependencies.nil? || @dependencies.empty?
-        self.forecast_run.save
+        ActiveRecord::Base.connection.verify!
+        self.forecast_run.update_attributes(status:  "completed")
+        # self.forecast_run.save
         Castmaster.log.info {"#{log_indent}#{name}--Finished forecast run: forecast_id = #{self.forecast_run.id}."}    
       rescue StandardError => e
-        self.forecast_run = nil
+        self.forecast_run.update_attributes(status: "error", error_message: e) 
         Castmaster.log.error e
         raise e       
       end
@@ -208,6 +213,7 @@ class ForecastGenerator
     forecast_run
   end
 
+end
   def forecast_procedure
   end
 
