@@ -101,7 +101,7 @@ class ForecastGenerator
 
   def find_existing_forecast_run
     # conn.verify!
-    forecasts = Forecast.where(identification_conditions.merge({date_reaped: nil})).order('id desc')
+    forecasts = Forecast.where(identification_conditions.merge({date_reaped: nil, status: 'completed'})).order('id desc')
     current_dependencies = {}
     self.dependencies.each { |n,d|  current_dependencies[n] = d.forecast_id unless d.parameters[:ephemeral] }
 
