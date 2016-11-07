@@ -222,6 +222,7 @@ class ForecastGenerator
   def map_dependencies
     mp = {}
     mp[:forecast_id] = self.forecast_id    
+    mp[:name] = self.name
     unless self.dependencies.empty?
       dep_map = {}
       self.dependencies.each do |n,f|
