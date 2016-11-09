@@ -1,0 +1,4 @@
+generator_library:
+  - lib
+initializer_dir: initializers
+log_file: logs/castmaster.log
