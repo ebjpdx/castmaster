@@ -1,0 +1,3 @@
+class Distribution < ForecastGenerator
+end
+
