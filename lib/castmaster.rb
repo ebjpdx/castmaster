@@ -12,14 +12,14 @@ module Castmaster
 
     def self.initialize(configuration_file = nil)
       Castmaster::Configuration.load_configuration(configuration_file) if configuration_file
-      @@log = Logger.new(Castmaster::Configuration.log_file)       
+      @@log = Logger.new(Castmaster::Configuration.log_file)
       initialize_application_database_connection
       load_initializers
       load_generators
     end
 
     def self.log
-       @@log 
+       @@log
     end
 
     def self.load_generators
@@ -31,7 +31,7 @@ module Castmaster
     end
 
     def self.load_initializers
-      require_all Castmaster::Configuration.initializer_dir #if File.exists?(Castmaster::Configuration.initializer_dir)
+      require_all Castmaster::Configuration.initializer_dir if Dir.exists?(Castmaster::Configuration.initializer_dir)
 
     end
 

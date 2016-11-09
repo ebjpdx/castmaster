@@ -1,6 +1,11 @@
 #!/usr/bin/env ruby
 
-require 'castmaster'
+require 'pry'
+require 'castmaster.rb'
+
+Castmaster.initialize(ARGV[0] || 'config/castmaster_configuration.yml')
+Pry.config.prompt_name = 'cast'
+binding.pry quiet: true
 
 
 

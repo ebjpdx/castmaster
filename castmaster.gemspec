@@ -29,7 +29,9 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'activerecord', '>= 3.2'
   s.add_runtime_dependency 'activesupport', '>= 3.2.13'
+  s.add_runtime_dependency 'sqlite3','>=1.3.12'
   s.add_runtime_dependency 'json', '>= 1.5.5'
   s.add_runtime_dependency 'require_all', '>= 1.2.1'
   s.add_runtime_dependency 'popen4', '>= 0.1.2'
+  s.add_runtime_dependency 'pry', '>=0.10.0'
 end
