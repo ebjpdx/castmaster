@@ -27,3 +27,12 @@ Change the `config/database.yml` file to point to a live database (otherwise it 
 
 TODO: Write usage instructions here
 
+
+Forecast Generators will be autoloaded if they are placed in the `forecast_generators` folder. However, they need to follow Rails naming conventions. The filename should be the class name in underscore, and generators located in a subfolder need to either be namespaced or placed in a module with the subfolder name. 
+
+    ./forecast_generators/examples/wikipedia_page_views_by_day.rb
+
+Should have the name
+
+    class Examples::WikipediaPageViewsByDay
+
