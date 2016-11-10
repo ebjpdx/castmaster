@@ -1,0 +1,3 @@
+class Measurement < ForecastGenerator
+end
+
