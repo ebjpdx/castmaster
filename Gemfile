@@ -1,9 +1,5 @@
 source 'https://rubygems.org'
 
-<<<<<<< HEAD
-# Specify your gem's dependencies in castmaster.gemspec
-gemspec
-=======
 gem 'require_all', '>= 1.2.1'
 gem 'popen4', '>= 0.1.2'
 
@@ -55,4 +51,3 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
->>>>>>> rails_appification
