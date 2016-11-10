@@ -1,7 +1,7 @@
 # module Examples
  class Examples::WikipediaPageViewsByDay < Measurement
 
-  self.default_parameters= {:run_date => Date.yesterday}
+  # self.default_parameters= {:run_date => Date.yesterday}
 
 
   def initialize(param={})
@@ -9,7 +9,7 @@
     self.type           = :ruby
     self.grain          = :day
     self.training_start = '2016-01-01'.to_date
-    self.training_end   = param[:run_date]
+    self.training_end   = '2016-04-18'.to_date #param[:run_date]
     self.forecast_start = self.training_start
     self.forecast_end   = self.training_end
 

@@ -1,0 +1,4 @@
+:wikdata:
+  :generator: :'Examples::WikipediaPageViewsByDay'
+  :parameters:
+    :run_date: <%= RUN_DATE %>
