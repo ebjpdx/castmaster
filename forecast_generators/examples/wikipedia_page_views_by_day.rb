@@ -1,4 +1,5 @@
- class WikipediaPageViewsByDay < Measurement
+# module Examples
+ class Examples::WikipediaPageViewsByDay < Measurement
 
   self.default_parameters= {:run_date => Date.yesterday}
 
@@ -50,3 +51,4 @@
 
 end
 
+# end
