@@ -117,8 +117,8 @@ class ForecastGenerator
       forecasts.select do |f|
           old_dependencies = Hash[f.dependency_runs.map do |fd|
             #Manual backfill dependency name as needed.
-            raise "forecast_dependencies.dependency_name needs to be manually backfilled for #{fd.forecast_id}, #{fd.name}, #{fd.dependency_id}"  if fd.dependency_name.nil?
-            [fd.dependency_name.to_sym,fd.dependency_id]
+            raise "forecast_dependencies.dependency_name needs to be manually backfilled for #{fd.forecast_id}, #{fd.name}, #{fd.dependent_forecast_run_id}"  if fd.dependency_name.nil?
+            [fd.dependency_name.to_sym,fd.dependent_forecast_run_id]
            end
           ]
          (current_dependencies.to_a - old_dependencies.to_a).empty?
@@ -188,7 +188,7 @@ class ForecastGenerator
         self.forecast_run = ForecastRun.new(forecasts_field_values)
         # self.forecast_run.id = get_next_forecast_id
         self.forecast_run.status = "started"
-        self.forecast_run.dependency_runs.new @dependencies.map { |n,d| {dependency_id: d.forecast_id, name: d.name, target_table: d.target_table, dependency_name: n.to_s} } unless @dependencies.nil? || @dependencies.empty?
+        self.forecast_run.dependency_runs.new @dependencies.map { |n,d| {dependent_forecast_run_id: d.forecast_id, name: d.name, target_table: d.target_table, dependency_name: n.to_s} } unless @dependencies.nil? || @dependencies.empty?
         self.forecast_run.save
       begin
         add_partitions if self.partitioned_table?
