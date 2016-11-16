@@ -20,10 +20,12 @@
 # Ignore Byebug command history file.
 .byebug_history
 
-.DS_Store
+# Ignore data files
+/data/*
 
 *.gem
 *.rbc
+/**.DS_Store
 .DS_Store
 .config
 .yardoc

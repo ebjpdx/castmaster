@@ -1,0 +1,5 @@
+:ex1:
+  :generator: :'Examples::HelloWorld'
+  :parameters:
+    :run_date: <%= RUN_DATE %>
+    :message: Pacifica

@@ -30,12 +30,12 @@ Change the `config/database.yml` file to point to a live database (otherwise it 
 The rails console can be used to run forecasts interactively. To run a forecast, first, create a new Forecast Generator object using the `build` method, and then run that object.
 
     rails console
-    wp = Examples::WikipediaPageViewsByDay.build
+    wp = Examples::HelloWorld.build
     wp.run
 
 The `build` method will accept parameter values for the forecast as arguments. If no parameter hash is given, default parameters, defined in the Forecast Generator will be used.
 
-    wp = Examples::WikipediaPageViewsByDay.build(run_date: Date.today)
+    wp = Examples::HelloWorld.build(message: 'New York')
 
 If there is already a matching `ForecastRun`, calling the `run` method will not execute the forecast, but will simply return the matching run. If a forecast does need to be executed again (say during development), it can be run with the `force_refresh` option.
 
@@ -47,7 +47,7 @@ If `force_refresh` is set to `:all`, the dependecies of the forecast  (and their
 ####Non-Interactive
 The `cast` rake task can be used to run one or more forecasts in a non-interactive manner. This task expects to receive a filename that references a YAML configuration file giving the forecast generators to run, and any parameters for them. 
 
-    rails "cast[/Users/eric.johnson/Downloads/wiki_job.yml]"
+    rails "cast[./config/jobs/examples.yml]"
 
 ## Authoring Forecast Generators
 

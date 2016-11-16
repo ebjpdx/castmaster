@@ -10,11 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161108201332) do
+ActiveRecord::Schema.define(version: 20161114215600) do
 
   create_table "dependency_runs", force: :cascade do |t|
-    t.bigint   "forecast_run_id"
-    t.bigint   "dependent_forecast_run_id"
+    t.integer  "forecast_run_id",           null: false
+    t.integer  "dependent_forecast_run_id", null: false
+    t.text     "name",                      null: false
+    t.text     "target_table",              null: false
+    t.text     "dependency_name",           null: false
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
   end
@@ -34,5 +37,6 @@ ActiveRecord::Schema.define(version: 20161108201332) do
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
   end
+
 
 end
