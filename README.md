@@ -5,10 +5,10 @@ Castmaster is a tool to manage forecast runs (i.e. a taskmaster for forecasts). 
 `Forecast Generators` have four components:
 - Parameters: Inputs that the forecast can accept at runtime
 - Dependencies: Other Forecast Generators, whose output is needed by the current Generator, including data/measurements
-- Procedure: The code that will modify input data to producforecast
+- Procedure: The code that will modify input data to produce a forecast
 - Metadata: Information that will be stored about the forecast, such as the forecast start and end dates
 
-Whenever a `Forecast Generator` is called, Castmaster will check to see if its dependencies have a matching `Forecast Run`, and call any that don't. Then it will look to see if a valid run of the `Forecast Generator` already exists with the same parameters and dependent runs. If no existing forecast run is found, the procedure is run and a new `Forecast Run` is created. 
+Whenever a `Forecast Generator` is called, Castmaster will check to see if its dependencies have a valid `Forecast Run`, and call any that don't. Then it will look to see if a valid run of the `Forecast Generator` already exists with the same parameters and dependency runs. If no existing forecast run is found, the procedure is run and a new forcast is created. 
 
 Castmaster was created primarily to handle cases where there is an "ecosystem" of forecasts: forecasts are built on top of multiple other forecasts or data sources, each of which may have different procedures, dependencies, or input parameters. For example, a forecast of return volume might depend how many orders are forecast, which in turn depends upon a set of historical data. 
 
